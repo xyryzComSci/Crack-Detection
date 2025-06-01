@@ -19,9 +19,14 @@ def convert_to_serializable(obj):
         return [convert_to_serializable(item) for item in obj]
     return obj
 
-app = Flask(__name__)
+# Initialize Flask app with static folder configuration
+app = Flask(__name__, 
+            static_url_path='/static',
+            static_folder='static',
+            template_folder='templates')
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  # Use /tmp for Vercel
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -72,6 +77,13 @@ def analyze_image():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# Add health check endpoint
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy'}), 200
+
+app = app.wsgi_app  # For Vercel deployment
 
 if __name__ == '__main__':
     app.run(debug=True) 
