@@ -83,7 +83,5 @@ def analyze_image():
 def health_check():
     return jsonify({'status': 'healthy'}), 200
 
-app = app.wsgi_app  # For Vercel deployment
-
 if __name__ == '__main__':
     app.run(debug=True) 
