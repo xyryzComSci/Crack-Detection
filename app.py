@@ -26,7 +26,7 @@ app = Flask(__name__,
             template_folder='templates')
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  # Use /tmp for Vercel
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  # Use /tmp for uploads
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -84,4 +84,6 @@ def health_check():
     return jsonify({'status': 'healthy'}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    # Get port from environment variable or default to 10000
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port) 
